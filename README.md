@@ -1,56 +1,79 @@
 # PYTHON-WK7-ASSIGNMENT-JULY-COHORT-2025
 
-Analyzing Data with Pandas and Visualizing Results with Matplotlib
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+import seaborn as sns
 
-Description
+# Load the Iris dataset
+iris = load_iris()
+df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+df['species'] = iris.target
 
-Objective For this Assignment:
+# Map species to their names
+species_map = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
+df['species'] = df['species'].map(species_map)
 
-To load and analyze a dataset using the pandas library in Python.
-To create simple plots and charts with the matplotlib library for visualizing the data.
+# Display the first few rows of the dataset
+print("First few rows of the dataset:")
+print(df.head())
 
-Submission Requirements
-Submit a Jupyter notebook (.ipynb file) or Python script (.py file) containing:
-Data loading and exploration steps.
-Basic data analysis results.
-Visualizations.
-Any findings or observations.
+# Explore the structure of the dataset
+print("\nDataset structure:")
+print(df.info())
+print(df.describe())
 
-Task 1: Load and Explore the Dataset
-Choose a dataset in CSV format (for example, you can use datasets like the Iris dataset, a sales dataset, or any dataset of your choice).
-Load the dataset using pandas.
-Display the first few rows of the dataset using .head() to inspect the data.
-Explore the structure of the dataset by checking the data types and any missing values.
-Clean the dataset by either filling or dropping any missing values.
-Task 2: Basic Data Analysis
-Compute the basic statistics of the numerical columns (e.g., mean, median, standard deviation) using .describe().
-Perform groupings on a categorical column (for example, species, region, or department) and compute the mean of a numerical column for each group.
-Identify any patterns or interesting findings from your analysis.
-Task 3: Data Visualization
-Create at least four different types of visualizations:
-Line chart showing trends over time (for example, a time-series of sales data).
-Bar chart showing the comparison of a numerical value across categories (e.g., average petal length per species).
-Histogram of a numerical column to understand its distribution.
-Scatter plot to visualize the relationship between two numerical columns (e.g., sepal length vs. petal length).
-Customize your plots with titles, labels for axes, and legends where necessary.
+# Task 1: Load and Explore the Dataset
+print("\nMissing values:")
+print(df.isnull().sum())
 
+# No missing values in this dataset, but if there were, we could handle them like this:
+# df.fillna(df.mean(), inplace=True)  # Fill missing values with mean
+# df.dropna(inplace=True)  # Drop rows with missing values
 
-Additional Instructions
+# Task 2: Basic Data Analysis
+print("\nBasic statistics:")
+print(df.describe())
 
-Dataset Suggestions:
+# Group by species and compute mean
+print("\nMean of features by species:")
+print(df.groupby('species').mean())
 
-You can use publicly available datasets from sites like Kaggle or UCI Machine Learning Repository.
-The Iris dataset (a classic dataset for classification problems) can be accessed via sklearn.datasets.load_iris(), which can be used for the analysis.
+# Task 3: Data Visualization
+# Line chart (not applicable for this dataset, but we can create a line chart for each feature)
+for feature in iris.feature_names:
+    plt.figure(figsize=(8, 6))
+    for species in df['species'].unique():
+        species_df = df[df['species'] == species]
+        plt.plot(species_df[feature], label=species)
+    plt.title(f"Line chart of {feature} by species")
+    plt.xlabel("Index")
+    plt.ylabel(feature)
+    plt.legend()
+    plt.show()
 
-Plot Customization:
+# Bar chart
+plt.figure(figsize=(8, 6))
+sns.barplot(x='species', y='sepal length (cm)', data=df)
+plt.title("Bar chart of sepal length by species")
+plt.xlabel("Species")
+plt.ylabel("Sepal length (cm)")
+plt.show()
 
-Customize the plots using the matplotlib library to add titles, axis labels, and legends.
-Use seaborn for additional plotting styles, which can make your charts more visually appealing.
+# Histogram
+plt.figure(figsize=(8, 6))
+sns.histplot(df['sepal length (cm)'], kde=True)
+plt.title("Histogram of sepal length")
+plt.xlabel("Sepal length (cm)")
+plt.ylabel("Frequency")
+plt.show()
 
-Error Handling:
-
-Handle possible errors during the file reading (e.g., file not found), missing data, or incorrect data types by using exception-handling mechanisms (try, except).
-
-Submission:
-
-Ensure your submission is complete with all necessary code and explanations. Make sure that each plot is properly labeled and provides insights into the dataset.
+# Scatter plot
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x='sepal length (cm)', y='petal length (cm)', hue='species', data=df)
+plt.title("Scatter plot of sepal length vs petal length")
+plt.xlabel("Sepal length (cm)")
+plt.ylabel("Petal length (cm)")
+plt.legend()
+plt.show()
